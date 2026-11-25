@@ -1,5 +1,3 @@
-"""Окно, отрисовка и клавиатурное управление «Змейкой»."""
-
 import tkinter as tk
 
 import config as cfg
@@ -7,10 +5,8 @@ from models import SnakeGame
 
 
 class App:
-    """Связать модель с Canvas и таймером tkinter."""
 
     def __init__(self):
-        """Создать окно фиксированного размера и привязать события."""
         self.root = tk.Tk()
         self.root.title("Змейка • Сулимов Л. И. • ПИ25-2")
         self.root.resizable(False, False)
@@ -27,17 +23,14 @@ class App:
         self.tick()
 
     def run(self):
-        """Запустить главный цикл окна."""
         self.root.mainloop()
 
     def on_focus_out(self, event):
-        """При потере фокуса поставить активную игру на паузу."""
         if self.game.state == "running":
             self.game.toggle_pause()
             self.draw()
 
     def on_click(self, event):
-        """Запустить партию щелчком внутри центральной карточки."""
         if (self.game.state in ("menu", "over", "won")
                 and 100 <= event.x <= cfg.WIDTH - 100
                 and 240 <= event.y <= 430):
@@ -45,7 +38,6 @@ class App:
             self.draw()
 
     def on_key(self, event):
-        """Обработать поворот, старт, паузу, сброс и выход."""
         key = event.keysym.lower()
         directions = {"up": (0, -1), "w": (0, -1),
                       "down": (0, 1), "s": (0, 1),
@@ -64,7 +56,6 @@ class App:
         self.draw()
 
     def tick(self):
-        """Выполнить шаг модели и назначить следующий кадр."""
         self.game.step()
         self.best = max(self.best, self.game.score)
         self.draw()
@@ -73,12 +64,10 @@ class App:
         self.root.after(delay, self.tick)
 
     def text(self, x, y, value, size=12, color=cfg.TEXT, anchor="center"):
-        """Нарисовать текст единым шрифтом интерфейса."""
         self.canvas.create_text(x, y, text=value, fill=color,
                                 font=("Segoe UI", size), anchor=anchor)
 
     def draw(self):
-        """Перерисовать панель, игровое поле и текущее меню."""
         c = self.canvas
         c.delete("all")
         c.create_rectangle(0, 0, cfg.WIDTH, cfg.HUD,
